@@ -111,10 +111,40 @@ CREATE TABLE reservations
 --
 CREATE TABLE transactions
 (
-    id             INTEGER PRIMARY KEY AUTO_INCREMENT,
-    reservation_id INTEGER        NOT NULL,
-    amount         DECIMAL(10, 2) NOT NULL,
-    payment_method VARCHAR(255)   NOT NULL,
-    FOREIGN KEY (reservation_id) REFERENCES reservations (id)
+    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
+    reservation_id  INTEGER        NOT NULL,
+    amount          DECIMAL(10, 2) NOT NULL,
+    payment_method  VARCHAR(255)   NOT NULL,
+    promo_code_id   INTEGER        NOT NULL,
+    discount_amount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES reservations (id),
+    FOREIGN KEY (promo_code_id) REFERENCES promo_codes (id),
+--     FOREIGN KEY (discount_amount) REFERENCES promo_codes (id),
 )
 
+--
+-- Table structure for table `promo_codes`
+--
+
+CREATE TABLE promo_codes
+(
+    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
+    code            VARCHAR(255)   NOT NULL,
+    discount        DECIMAL(10, 2) NOT NULL,
+    expiration_date DATE           NOT NULL
+);
+
+--
+-- Table structure for table `property_reviews`
+--
+
+CREATE TABLE property_reviews
+(
+    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id    INTEGER NOT NULL,
+    listing_id INTEGER NOT NULL,
+    rating     INTEGER NOT NULL,
+    comment    TEXT    NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (listing_id) REFERENCES listings (id),
+)
