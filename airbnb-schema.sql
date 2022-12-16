@@ -9,7 +9,7 @@ airbnb;
 
 CREATE TABLE users
 (
-    id                INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id                SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     first_name        VARCHAR(45)  NOT NULL,
     last_name         VARCHAR(45)  NOT NULL,
     email             VARCHAR(255) NOT NULL,
@@ -29,15 +29,15 @@ CREATE TABLE users
 
 CREATE TABLE listings
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id              SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(255)   NOT NULL,
-    user_id         INTEGER        NOT NULL,
-    address_id      INTEGER        NOT NULL,
+    user_id         SMALLINT UNSIGNED NOT NULL,
+    address_id      SMALLINT UNSIGNED NOT NULL,
     description     TEXT           NOT NULL,
     property_type   VARCHAR(255)   NOT NULL,
     property_size   DECIMAL(10, 2) NOT NULL,
-    total_bedrooms  INTEGER        NOT NULL,
-    total_bathrooms INTEGER        NOT NULL,
+    total_bedrooms  SMALLINT UNSIGNED NOT NULL,
+    total_bathrooms SMALLINT UNSIGNED NOT NULL,
     latitude        VARCHAR(50)    NOT NULL,
     longitude       VARCHAR(50)    NOT NULL,
     price           DECIMAL(10, 2) NOT NULL,
@@ -45,7 +45,6 @@ CREATE TABLE listings
     modified        DATETIME       NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (address_id) REFERENCES addresses (id),
-
 );
 
 --
@@ -64,9 +63,9 @@ CREATE TABLE countries
 
 CREATE TABLE cities
 (
-    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id         SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     city       VARCHAR(50) NOT NULL,
-    country_id INTEGER     NOT NULL,
+    country_id SMALLINT UNSIGNED NOT NULL,
     FOREIGN KEY (country_id) REFERENCES countries (id),
 )
 
@@ -77,8 +76,8 @@ CREATE TABLE cities
 
 CREATE TABLE addresses
 (
-    id       INTEGER PRIMARY KEY AUTO_INCREMENT,
-    city_id  INTEGER      NOT NULL,
+    id       SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    city_id  SMALLINT UNSIGNED NOT NULL,
     street   VARCHAR(255) NOT NULL,
     zip_code VARCHAR(255) NOT NULL,
     FOREIGN KEY (city_id) REFERENCES cities (id)
@@ -90,10 +89,10 @@ CREATE TABLE addresses
 
 CREATE TABLE reservations
 (
-    id             INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id        INTEGER  NOT NULL,
-    listing_id     INTEGER  NOT NULL,
-    transaction_id INTEGER  NOT NULL,
+    id             SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id        SMALLINT UNSIGNED NOT NULL,
+    listing_id     SMALLINT UNSIGNED NOT NULL,
+    transaction_id SMALLINT UNSIGNED NOT NULL,
     start_date     DATE     NOT NULL,
     end_date       DATE     NOT NULL,
     start_date     DATETIME NOT NULL,
@@ -111,11 +110,11 @@ CREATE TABLE reservations
 --
 CREATE TABLE transactions
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
-    reservation_id  INTEGER        NOT NULL,
+    id              SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    reservation_id  SMALLINT UNSIGNED NOT NULL,
     amount          DECIMAL(10, 2) NOT NULL,
     payment_method  VARCHAR(255)   NOT NULL,
-    promo_code_id   INTEGER        NOT NULL,
+    promo_code_id   SMALLINT UNSIGNED NOT NULL,
     discount_amount DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations (id),
     FOREIGN KEY (promo_code_id) REFERENCES promo_codes (id),
@@ -128,7 +127,7 @@ CREATE TABLE transactions
 
 CREATE TABLE promo_codes
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id              SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     code            VARCHAR(255)   NOT NULL,
     discount        DECIMAL(10, 2) NOT NULL,
     expiration_date DATE           NOT NULL
@@ -140,7 +139,7 @@ CREATE TABLE promo_codes
 
 CREATE TABLE property_reviews
 (
-    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id         SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id    INTEGER NOT NULL,
     listing_id INTEGER NOT NULL,
     rating     INTEGER NOT NULL,
@@ -148,3 +147,29 @@ CREATE TABLE property_reviews
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (listing_id) REFERENCES listings (id),
 )
+
+--
+-- Table structure for table `categories`
+--
+
+CREATE TABLE categories
+(
+    id       SMALLINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    category VARCHAR(50) NOT NULL,
+)
+
+--
+-- View structure for view `user_list`
+--
+
+--
+-- View structure for view `property_list`
+--
+
+--
+-- View structure for view `property_reviews_list`
+--
+
+--
+-- View structure for view `reservations_list`
+--
