@@ -8,7 +8,7 @@ USE airbnb;
 
 CREATE TABLE users
 (
-    id                INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id           INTEGER PRIMARY KEY AUTO_INCREMENT,
     first_name        VARCHAR(45)  NOT NULL,
     last_name         VARCHAR(45)  NOT NULL,
     email             VARCHAR(255) NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE users
 
 CREATE TABLE countries
 (
-    id      INTEGER PRIMARY KEY AUTO_INCREMENT,
-    country VARCHAR(50) NOT NULL
+    country_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    country    VARCHAR(50) NOT NULL
 );
 
 --
@@ -38,10 +38,10 @@ CREATE TABLE countries
 
 CREATE TABLE cities
 (
-    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    city_id    INTEGER PRIMARY KEY AUTO_INCREMENT,
     city       VARCHAR(50) NOT NULL,
     country_id INTEGER     NOT NULL,
-    FOREIGN KEY (country_id) REFERENCES countries (id)
+    FOREIGN KEY (country_id) REFERENCES countries (country_id)
 );
 
 --
@@ -50,11 +50,11 @@ CREATE TABLE cities
 
 CREATE TABLE addresses
 (
-    id       INTEGER PRIMARY KEY AUTO_INCREMENT,
-    city_id  INTEGER      NOT NULL,
-    street   VARCHAR(255) NOT NULL,
-    zip_code VARCHAR(255) NOT NULL,
-    FOREIGN KEY (city_id) REFERENCES cities (id)
+    address_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    city_id    INTEGER      NOT NULL,
+    street     VARCHAR(255) NOT NULL,
+    zip_code   VARCHAR(255) NOT NULL,
+    FOREIGN KEY (city_id) REFERENCES cities (city_id)
 );
 
 --
@@ -63,22 +63,23 @@ CREATE TABLE addresses
 
 CREATE TABLE listings
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
-    name            VARCHAR(255)   NOT NULL,
-    user_id         INTEGER        NOT NULL,
+    listing_id      INTEGER PRIMARY KEY AUTO_INCREMENT,
+    title           VARCHAR(255)   NOT NULL,
+    host_id         INTEGER        NOT NULL,
     address_id      INTEGER        NOT NULL,
     description     TEXT           NOT NULL,
     property_type   VARCHAR(255)   NOT NULL,
     property_size   DECIMAL(10, 2) NOT NULL,
     total_bedrooms  INTEGER        NOT NULL,
     total_bathrooms INTEGER        NOT NULL,
+    total_beds      INTEGER        NOT NULL,
     latitude        VARCHAR(50)    NOT NULL,
     longitude       VARCHAR(50)    NOT NULL,
     price           DECIMAL(10, 2) NOT NULL,
     created         DATETIME       NOT NULL,
     modified        DATETIME       NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (address_id) REFERENCES addresses (id)
+    FOREIGN KEY (host_id) REFERENCES users (user_id),
+    FOREIGN KEY (address_id) REFERENCES addresses (address_id)
 );
 
 --
@@ -87,7 +88,7 @@ CREATE TABLE listings
 
 CREATE TABLE promo_codes
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
+    promo_code_id   INTEGER PRIMARY KEY AUTO_INCREMENT,
     code            VARCHAR(255)   NOT NULL,
     discount        DECIMAL(10, 2) NOT NULL,
     expiration_date DATE           NOT NULL
@@ -98,12 +99,16 @@ CREATE TABLE promo_codes
 --
 CREATE TABLE transactions
 (
-    id              INTEGER PRIMARY KEY AUTO_INCREMENT,
-    amount          DECIMAL(10, 2) NOT NULL,
-    payment_method  VARCHAR(255)   NOT NULL,
-    promo_code_id   INTEGER        NOT NULL,
-    discount_amount DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (promo_code_id) REFERENCES promo_codes (id)
+    transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id        INTEGER        NOT NULL,
+    listing_id     INTEGER        NOT NULL,
+    promo_code_id  INTEGER,
+    start_date     DATE           NOT NULL,
+    end_date       DATE           NOT NULL,
+    price          DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
+    FOREIGN KEY (promo_code_id) REFERENCES promo_codes (promo_code_id)
 );
 
 --
@@ -120,9 +125,9 @@ CREATE TABLE reservations
     end_date       DATETIME NOT NULL,
     created_at     DATETIME NOT NULL,
     updated_at     DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (listing_id) REFERENCES listings (id),
-    FOREIGN KEY (transaction_id) REFERENCES transactions (id)
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions (transaction_id)
 );
 
 --
@@ -131,13 +136,13 @@ CREATE TABLE reservations
 
 CREATE TABLE property_reviews
 (
-    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id    INTEGER NOT NULL,
-    listing_id INTEGER NOT NULL,
-    rating     INTEGER NOT NULL,
-    comment    TEXT    NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (listing_id) REFERENCES listings (id)
+    id          INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id     INTEGER NOT NULL,
+    listing_id  INTEGER NOT NULL,
+    rating      INTEGER NOT NULL,
+    review_text TEXT    NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id),
+    FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
 );
 
 --
