@@ -64,8 +64,9 @@ CREATE TABLE countries
 
 CREATE TABLE cities
 (
-    id   INTEGER PRIMARY KEY AUTO_INCREMENT,
-    city VARCHAR(50) NOT NULL,
+    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
+    city       VARCHAR(50) NOT NULL,
+    country_id INTEGER     NOT NULL,
     FOREIGN KEY (country_id) REFERENCES countries (id),
 )
 
@@ -76,50 +77,43 @@ CREATE TABLE cities
 
 CREATE TABLE addresses
 (
-    id          INTEGER PRIMARY KEY AUTO_INCREMENT,
-    address     VARCHAR(50) NOT NULL,
-    district    VARCHAR(20) NOT NULL,
-    FOREIGN KEY (city_id) REFERENCES cities (id),
-    postal_code VARCHAR(10) DEFAULT NULL,
+    id       INTEGER PRIMARY KEY AUTO_INCREMENT,
+    city_id  INTEGER      NOT NULL,
+    street   VARCHAR(255) NOT NULL,
+    zip_code VARCHAR(255) NOT NULL,
+    FOREIGN KEY (city_id) REFERENCES cities (id)
 )
 
 --
 -- Table structure for table `reservations`
 --
---
 
 CREATE TABLE reservations
 (
-    id         INTEGER PRIMARY KEY AUTO_INCREMENT,
-    FOREIGN KEY (listing_id) REFERENCES listings (id),
+    id             INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user_id        INTEGER  NOT NULL,
+    listing_id     INTEGER  NOT NULL,
+    transaction_id INTEGER  NOT NULL,
+    start_date     DATE     NOT NULL,
+    end_date       DATE     NOT NULL,
+    start_date     DATETIME NOT NULL,
+    end_date       DATETIME NOT NULL,
+    created_at     DATETIME NOT NULL,
+    updated_at     DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (listing_id) REFERENCES listings (id),
     FOREIGN KEY (transaction_id) REFERENCES transactions (id),
-    start_date DATETIME NOT NULL,
-    end_date   DATETIME NOT NULL,
-    price      INTEGER  NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
 );
 
 
 --
 -- Table structure for table `transactions`
 --
--- CREATE TABLE transactions
--- (
---     id INTEGER PRIMARY KEY AUTO_INCREMENT,
---     FOREIGN KEY (property_id) REFERENCES listings (id),
---     FOREIGN KEY (receiver_id) REFERENCES,
---     FOREIGN KEY (payee_id) REFERENCES reservations (user_id),
---
--- )
-
---
--- Table structure for table `promo-codes`
---
-
-
---
--- Table structure for table `property-reviews`
---
-
+CREATE TABLE transactions
+(
+    id             INTEGER PRIMARY KEY AUTO_INCREMENT,
+    reservation_id INTEGER        NOT NULL,
+    amount         DECIMAL(10, 2) NOT NULL,
+    payment_method VARCHAR(255)   NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES reservations (id)
+)
