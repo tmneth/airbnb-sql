@@ -1,21 +1,22 @@
 DROP SCHEMA IF EXISTS airbnb;
 CREATE SCHEMA airbnb;
-USE airbnb;
+USE
+airbnb;
 
 -- https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
 CREATE TABLE users
 (
-    user_id           INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    first_name        VARCHAR(255) NOT NULL,
-    last_name         VARCHAR(255) NOT NULL,
-    email             VARCHAR(255) NOT NULL,
-    email_verified_at DATETIME,
-    phone_number      VARCHAR(255),
-    password          VARCHAR(255) NOT NULL,
-    active            BOOLEAN      NOT NULL DEFAULT TRUE,
-    profile_image     VARCHAR(255) NOT NULL,
-    created           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    user_id        INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    first_name     VARCHAR(255) NOT NULL,
+    last_name      VARCHAR(255) NOT NULL,
+    email          VARCHAR(255) NOT NULL,
+    email_verified BOOLEAN               DEFAULT FALSE,
+    phone_number   VARCHAR(255),
+    password       VARCHAR(255) NOT NULL,
+    active         BOOLEAN      NOT NULL DEFAULT TRUE,
+    profile_image  VARCHAR(255) NOT NULL,
+    created        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE countries
@@ -29,10 +30,10 @@ CREATE TABLE countries
 CREATE TABLE cities
 (
     city_id    INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    city       VARCHAR(255)     NOT NULL,
+    city       VARCHAR(255) NOT NULL,
     country_id INTEGER UNSIGNED NOT NULL,
-    created    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified   TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (country_id) REFERENCES countries (country_id)
 );
 
@@ -40,30 +41,29 @@ CREATE TABLE addresses
 (
     address_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     city_id    INTEGER UNSIGNED NOT NULL,
-    street     VARCHAR(255)     NOT NULL,
-    zip_code   VARCHAR(255)     NOT NULL,
-    latitude   VARCHAR(50)      NOT NULL,
-    longitude  VARCHAR(50)      NOT NULL,
-    created    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified   TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    street     VARCHAR(255) NOT NULL,
+    zip_code   VARCHAR(255) NOT NULL,
+    latitude   VARCHAR(50)  NOT NULL,
+    longitude  VARCHAR(50)  NOT NULL,
+    created    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (city_id) REFERENCES cities (city_id)
 );
 
 CREATE TABLE listings
 (
     listing_id      INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    title           VARCHAR(255)     NOT NULL,
+    title           VARCHAR(255)   NOT NULL,
     host_id         INTEGER UNSIGNED NOT NULL,
     address_id      INTEGER UNSIGNED NOT NULL,
-    description     TEXT             NOT NULL,
-    property_type   VARCHAR(255)     NOT NULL,
-    property_size   DECIMAL(10, 2)   NOT NULL,
+    description     TEXT           NOT NULL,
+    property_type   VARCHAR(255)   NOT NULL,
     total_bedrooms  INTEGER UNSIGNED NOT NULL,
     total_bathrooms INTEGER UNSIGNED NOT NULL,
     total_beds      INTEGER UNSIGNED NOT NULL,
-    price           DECIMAL(10, 2)   NOT NULL,
-    created         TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified        TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    price           DECIMAL(10, 2) NOT NULL,
+    created         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (host_id) REFERENCES users (user_id),
     FOREIGN KEY (address_id) REFERENCES addresses (address_id)
 );
@@ -94,10 +94,10 @@ CREATE TABLE reservations
     user_id        INTEGER UNSIGNED NOT NULL,
     listing_id     INTEGER UNSIGNED NOT NULL,
     transaction_id INTEGER UNSIGNED NOT NULL,
-    start_date     DATETIME         NOT NULL,
-    end_date       DATETIME         NOT NULL,
-    created        TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified       TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    start_date     DATETIME  NOT NULL,
+    end_date       DATETIME  NOT NULL,
+    created        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
     FOREIGN KEY (transaction_id) REFERENCES transactions (transaction_id)
@@ -109,9 +109,9 @@ CREATE TABLE property_reviews
     user_id     INTEGER UNSIGNED NOT NULL,
     listing_id  INTEGER UNSIGNED NOT NULL,
     rating      INTEGER UNSIGNED NOT NULL,
-    review_text TEXT             NOT NULL,
-    created     TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    modified    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    review_text TEXT      NOT NULL,
+    created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
 );
@@ -133,14 +133,16 @@ CREATE TABLE categories
     FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
 );
 
-### views
+###
+views
 # view with all non-sensitive information about active users
 create view active_user_list as
 select user_id, first_name, last_name, email, phone_number, profile_image
 from users
 where active = true;
 
-# view with full info about a property
+#
+view with full info about a property
 create view full_property_info as
 select l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
 from listings l
@@ -148,14 +150,16 @@ from listings l
          inner join cities c on a.city_id = c.city_id
          inner join countries c2 on c.country_id = c2.country_id;
 
-# view with all reviews for every property
+#
+view with all reviews for every property
 create view review_list as
 select l.listing_id, pr.user_id, pr.rating, pr.review_text
 from listings l
          left join property_reviews pr on l.listing_id = pr.listing_id;
 
 
-# view with a property reservation history
+#
+view with a property reservation history
 create view property_reservation_history as
 select l.listing_id, r.start_date, r.end_date, t.total, u.first_name, u.last_name
 from listings l
