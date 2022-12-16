@@ -31,20 +31,20 @@ CREATE TABLE listings
 (
     id              INTEGER PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(255)   NOT NULL,
+    user_id         INTEGER        NOT NULL,
+    address_id      INTEGER        NOT NULL,
     description     TEXT           NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
     property_type   VARCHAR(255)   NOT NULL,
     property_size   DECIMAL(10, 2) NOT NULL,
     total_bedrooms  INTEGER        NOT NULL,
     total_bathrooms INTEGER        NOT NULL,
-    FOREIGN KEY (address_id) REFERENCES addresses (id),
-    FOREIGN KEY (country_id) REFERENCES countries (id),
-    FOREIGN KEY (city_id) REFERENCES cities (id),
     latitude        VARCHAR(50)    NOT NULL,
     longitude       VARCHAR(50)    NOT NULL,
     price           DECIMAL(10, 2) NOT NULL,
     created         DATETIME       NOT NULL,
     modified        DATETIME       NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (address_id) REFERENCES addresses (id),
 
 );
 
@@ -117,3 +117,4 @@ CREATE TABLE transactions
     payment_method VARCHAR(255)   NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations (id)
 )
+
