@@ -2,132 +2,126 @@ DROP SCHEMA IF EXISTS airbnb;
 CREATE SCHEMA airbnb;
 USE airbnb;
 
+-- https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
 CREATE TABLE users (
     user_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    email_verified_at DATETIME NOT NULL,
-    phone_number VARCHAR(255) NOT NULL,
+    email_verified_at DATETIME,
+    phone_number VARCHAR(255),
     password VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE,
-    profile_image VARCHAR(255) NOT NULL
+    profile_image VARCHAR(255) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE countries (
-    country_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    country VARCHAR(50) NOT NULL
+    country_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    country VARCHAR(255) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
---
--- Table structure for table `cities`
---
 
 CREATE TABLE cities (
-    city_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    city VARCHAR(50) NOT NULL,
-    country_id INTEGER NOT NULL,
+    city_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    city VARCHAR(255) NOT NULL,
+    country_id INTEGER UNSIGNED NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (country_id) REFERENCES countries (country_id)
 );
---
--- Table structure for table `addresses`
---
 
 CREATE TABLE addresses (
-    address_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    city_id INTEGER NOT NULL,
+    address_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    city_id INTEGER UNSIGNED NOT NULL,
     street VARCHAR(255) NOT NULL,
     zip_code VARCHAR(255) NOT NULL,
+    latitude VARCHAR(50) NOT NULL,
+    longitude VARCHAR(50) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (city_id) REFERENCES cities (city_id)
 );
---
--- Table structure for table `listings`
---
 
 CREATE TABLE listings (
-    listing_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    listing_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
-    host_id INTEGER NOT NULL,
-    address_id INTEGER NOT NULL,
+    host_id INTEGER UNSIGNED NOT NULL,
+    address_id INTEGER UNSIGNED NOT NULL,
     description TEXT NOT NULL,
     property_type VARCHAR(255) NOT NULL,
     property_size DECIMAL(10, 2) NOT NULL,
-    total_bedrooms INTEGER NOT NULL,
-    total_bathrooms INTEGER NOT NULL,
-    total_beds INTEGER NOT NULL,
-    latitude VARCHAR(50) NOT NULL,
-    longitude VARCHAR(50) NOT NULL,
+    total_bedrooms INTEGER UNSIGNED NOT NULL,
+    total_bathrooms INTEGER UNSIGNED NOT NULL,
+    total_beds INTEGER UNSIGNED NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    created DATETIME NOT NULL,
-    modified DATETIME NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (host_id) REFERENCES users (user_id),
     FOREIGN KEY (address_id) REFERENCES addresses (address_id)
 );
---
--- Table structure for table `promo_codes`
---
 
 CREATE TABLE promo_codes (
-    promo_code_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    promo_code_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     code VARCHAR(255) NOT NULL,
     discount DECIMAL(10, 2) NOT NULL,
-    expiration_date DATE NOT NULL
+    expiration_date DATE NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
---
--- Table structure for table `transactions`
---
-CREATE TABLE transactions
-(
-    transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id INTEGER NOT NULL,
-    listing_id INTEGER NOT NULL,
-    promo_code_id INTEGER,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
+
+CREATE TABLE transactions (
+    transaction_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    promo_code_id INTEGER UNSIGNED,
+    total DECIMAL(10, 2) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (promo_code_id) REFERENCES promo_codes (promo_code_id)
 );
---
--- Table structure for table `reservations`
---
 
 CREATE TABLE reservations (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id INTEGER NOT NULL,
-    listing_id INTEGER NOT NULL,
-    transaction_id INTEGER NOT NULL,
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id INTEGER UNSIGNED NOT NULL,
+    listing_id INTEGER UNSIGNED NOT NULL,
+    transaction_id INTEGER UNSIGNED NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
     FOREIGN KEY (transaction_id) REFERENCES transactions (transaction_id)
 );
---
--- Table structure for table `property_reviews`
---
 
 CREATE TABLE property_reviews (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    user_id INTEGER NOT NULL,
-    listing_id INTEGER NOT NULL,
-    rating INTEGER NOT NULL,
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    user_id INTEGER UNSIGNED NOT NULL,
+    listing_id INTEGER UNSIGNED NOT NULL,
+    rating INTEGER UNSIGNED NOT NULL,
     review_text TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
 );
---
--- Table structure for table `categories`
---
+
+CREATE TABLE category_types (
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    category VARCHAR(255) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
 CREATE TABLE categories (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    category VARCHAR(50) NOT NULL
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    category_type INTEGER UNSIGNED,
+    listing_id INTEGER UNSIGNED,
+    FOREIGN KEY (category_type) REFERENCES category_types(id),
+    FOREIGN KEY (listing_id) REFERENCES listings(listing_id)
 );
+
 --
 -- View structure for view `user_list`
 --
