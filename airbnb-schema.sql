@@ -109,7 +109,7 @@ CREATE TABLE property_reviews
     user_id     INTEGER UNSIGNED NOT NULL,
     listing_id  INTEGER UNSIGNED NOT NULL,
     rating      INTEGER UNSIGNED NOT NULL,
-    review_text TEXT      NOT NULL,
+    review_text TEXT,
     created     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id),
