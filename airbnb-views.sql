@@ -1,23 +1,23 @@
-create view active_user_list as
-select user_id, first_name, last_name, email, phone_number, profile_image
-from users
-where active = true;
+CREATE VIEW active_user_list AS
+SELECT user_id, first_name, last_name, email, phone_number, profile_image
+FROM users
+WHERE active = TRUE;
 
-create view full_property_info as
-select l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
-from listings l
-         inner join addresses a on l.address_id = a.address_id
-         inner join cities c on a.city_id = c.city_id
-         inner join countries c2 on c.country_id = c2.country_id;
+CREATE VIEW full_property_info AS
+SELECT l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
+FROM listings l
+         INNER JOIN addresses a ON l.address_id = a.address_id
+         INNER JOIN cities c ON a.city_id = c.city_id
+         INNER JOIN countries c2 ON c.country_id = c2.country_id;
 
-create view review_list as
-select l.listing_id, pr.user_id, pr.rating, pr.review_text
-from listings l
-         left join property_reviews pr on l.listing_id = pr.listing_id;
+CREATE VIEW review_list AS
+SELECT l.listing_id, pr.user_id, pr.rating, pr.review_text
+FROM listings l
+         LEFT JOIN property_reviews pr ON l.listing_id = pr.listing_id;
 
-create view property_reservation_history as
-select l.listing_id, r.start_date, r.end_date, t.total, u.first_name, u.last_name
-from listings l
-         left join reservations r on l.listing_id = r.listing_id
-         left join transactions t on r.transaction_id = t.transaction_id
-         inner join users u on r.user_id = u.user_id;
+CREATE VIEW property_reservation_history AS
+SELECT l.listing_id, r.start_date, r.end_date, t.total, u.first_name, u.last_name
+FROM listings l
+         LEFT JOIN reservations r ON l.listing_id = r.listing_id
+         LEFT JOIN transactions t ON r.transaction_id = t.transaction_id
+         INNER JOIN users u ON r.user_id = u.user_id;
