@@ -3,13 +3,10 @@ EXPLAIN SELECT * FROM full_property_info WHERE id = 1;
 
 CREATE OR REPLACE VIEW full_property_info AS
 SELECT l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
-FROM listings l,
-     addresses a,
-     cities c,
-     countries c2
-WHERE l.address_id = a.id
-  AND a.city_id = c.id
-  AND c.country_id = c2.id;
+FROM listings l
+         INNER JOIN addresses a ON l.address_id = a.id
+         INNER JOIN cities c ON a.city_id = c.id
+         INNER JOIN countries c2 ON c.country_id = c2.id;
 
 # A view that displays a list of all property reviews
 EXPLAIN SELECT * FROM review_list WHERE id = 1;
