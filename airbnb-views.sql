@@ -1,5 +1,5 @@
 # A view that display all property info
-CREATE VIEW full_property_info AS
+CREATE OR REPLACE VIEW full_property_info AS
 SELECT l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
 FROM listings l
          INNER JOIN addresses a ON l.address_id = a.id
@@ -7,13 +7,13 @@ FROM listings l
          INNER JOIN countries c2 ON c.country_id = c2.id;
 
 # A view that displays a list of all property reviews
-CREATE VIEW review_list AS
+CREATE OR REPLACE VIEW review_list AS
 SELECT l.id, pr.user_id, pr.rating, pr.review_text
 FROM listings l
          LEFT JOIN property_reviews pr ON l.id = pr.listing_id;
 
 # A view that displays all property reservations
-CREATE VIEW property_reservation_history AS
+CREATE OR REPLACE VIEW property_reservation_history AS
 SELECT l.id, r.start_date, r.end_date, t.total, u.first_name, u.last_name
 FROM listings l
          LEFT JOIN reservations r ON l.id = r.listing_id
@@ -21,7 +21,7 @@ FROM listings l
          INNER JOIN users u ON r.user_id = u.id;
 
 # A view that displays all promo codes that are currently valid (not expired) and the total number of transactions that used each promo code:
-CREATE VIEW valid_promo_codes_with_transactions AS
+CREATE OR REPLACE VIEW valid_promo_codes AS
 SELECT p.id, p.code, p.discount, p.expiration_date, COUNT(t.id) AS total_transactions
 FROM promo_codes p
          LEFT JOIN transactions t ON t.promo_code_id = p.id
@@ -29,7 +29,7 @@ WHERE p.expiration_date > CURDATE()
 GROUP BY p.id;
 
 # A view that displays the total number of transactions, total amount spent, and average transaction amount for each user:
-CREATE VIEW user_transactions_summary AS
+CREATE OR REPLACE VIEW user_transactions_summary AS
 SELECT u.id,
        u.email,
        COUNT(t.id)  AS total_transactions,
@@ -41,7 +41,7 @@ FROM users u
 GROUP BY u.id;
 
 # A view that displays the list of all cities along with their country and the number of listings in each city:
-CREATE VIEW city_listings AS
+CREATE OR REPLACE VIEW city_listings AS
 SELECT ct.city, c.country, COUNT(l.id) AS total_listings
 FROM cities ct
          INNER JOIN countries c ON c.id = ct.country_id
