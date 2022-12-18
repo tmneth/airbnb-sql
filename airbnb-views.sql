@@ -3,10 +3,13 @@ EXPLAIN SELECT * FROM full_property_info WHERE id = 1;
 
 CREATE OR REPLACE VIEW full_property_info AS
 SELECT l.*, a.street, a.zip_code, a.latitude, a.longitude, c.city, c2.country
-FROM listings l
-         INNER JOIN addresses a ON l.address_id = a.id
-         INNER JOIN cities c ON a.city_id = c.id
-         INNER JOIN countries c2 ON c.country_id = c2.id;
+FROM listings l,
+     addresses a,
+     cities c,
+     countries c2
+WHERE l.address_id = a.id
+  AND a.city_id = c.id
+  AND c.country_id = c2.id;
 
 # A view that displays a list of all property reviews
 EXPLAIN SELECT * FROM review_list WHERE id = 1;
@@ -60,3 +63,9 @@ FROM cities ct
          INNER JOIN addresses a ON a.city_id = ct.id
          LEFT JOIN listings l ON l.address_id = a.id
 GROUP BY c.country, ct.city;
+
+# A view that displays the list of all active users:
+CREATE OR REPLACE VIEW active_users AS
+SELECT u.first_name, u.last_name, u.email, u.phone_number
+FROM users u
+WHERE u.active = 1;
