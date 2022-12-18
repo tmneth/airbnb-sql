@@ -1,7 +1,6 @@
 DROP SCHEMA IF EXISTS airbnb;
 CREATE SCHEMA airbnb;
-USE
-    airbnb;
+USE airbnb;
 
 -- https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
 CREATE TABLE users

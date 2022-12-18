@@ -62,6 +62,8 @@ FROM cities ct
 GROUP BY c.country, ct.city;
 
 # A view that displays the list of all active users:
+EXPLAIN SELECT * FROM active_users;
+
 CREATE OR REPLACE VIEW active_users AS
 SELECT u.first_name, u.last_name, u.email, u.phone_number
 FROM users u
