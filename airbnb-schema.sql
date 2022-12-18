@@ -6,7 +6,7 @@ USE
 -- https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html
 CREATE TABLE users
 (
-    user_id        INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id        INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     first_name     VARCHAR(255) NOT NULL,
     last_name      VARCHAR(255) NOT NULL,
     email          VARCHAR(255) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE users
 
 CREATE TABLE countries
 (
-    country_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     country    VARCHAR(255) NOT NULL,
     created    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -29,17 +29,17 @@ CREATE TABLE countries
 
 CREATE TABLE cities
 (
-    city_id    INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id    INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     city       VARCHAR(255)     NOT NULL,
     country_id INTEGER UNSIGNED NOT NULL,
     created    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified   TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (country_id) REFERENCES countries (country_id)
+    FOREIGN KEY (country_id) REFERENCES countries (id)
 );
 
 CREATE TABLE addresses
 (
-    address_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     city_id    INTEGER UNSIGNED NOT NULL,
     street     VARCHAR(255)     NOT NULL,
     zip_code   VARCHAR(255)     NOT NULL,
@@ -47,12 +47,12 @@ CREATE TABLE addresses
     longitude  VARCHAR(50)      NOT NULL,
     created    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified   TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (city_id) REFERENCES cities (city_id)
+    FOREIGN KEY (city_id) REFERENCES cities (id)
 );
 
 CREATE TABLE listings
 (
-    listing_id      INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id      INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     title           VARCHAR(255)     NOT NULL,
     host_id         INTEGER UNSIGNED NOT NULL,
     address_id      INTEGER UNSIGNED NOT NULL,
@@ -64,13 +64,13 @@ CREATE TABLE listings
     price           DECIMAL(10, 2)   NOT NULL,
     created         TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified        TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (host_id) REFERENCES users (user_id),
-    FOREIGN KEY (address_id) REFERENCES addresses (address_id)
+    FOREIGN KEY (host_id) REFERENCES users (id),
+    FOREIGN KEY (address_id) REFERENCES addresses (id)
 );
 
 CREATE TABLE promo_codes
 (
-    promo_code_id   INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id   INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     code            VARCHAR(255)   NOT NULL,
     discount        DECIMAL(10, 2) NOT NULL,
     expiration_date DATE           NOT NULL,
@@ -80,12 +80,12 @@ CREATE TABLE promo_codes
 
 CREATE TABLE transactions
 (
-    transaction_id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id INTEGER UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     promo_code_id  INTEGER UNSIGNED,
     total          DECIMAL(10, 2) NOT NULL,
     created        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified       TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (promo_code_id) REFERENCES promo_codes (promo_code_id)
+    FOREIGN KEY (promo_code_id) REFERENCES promo_codes (id)
 );
 
 CREATE TABLE reservations
@@ -98,9 +98,9 @@ CREATE TABLE reservations
     end_date       DATETIME         NOT NULL,
     created        TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified       TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (listing_id) REFERENCES listings (listing_id),
-    FOREIGN KEY (transaction_id) REFERENCES transactions (transaction_id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (listing_id) REFERENCES listings (id),
+    FOREIGN KEY (transaction_id) REFERENCES transactions (id)
 );
 
 CREATE TABLE property_reviews
@@ -112,8 +112,8 @@ CREATE TABLE property_reviews
     review_text TEXT,
     created     TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     modified    TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (listing_id) REFERENCES listings (id)
 );
 
 CREATE TABLE category_types
@@ -130,5 +130,6 @@ CREATE TABLE categories
     category_type INTEGER UNSIGNED,
     listing_id    INTEGER UNSIGNED,
     FOREIGN KEY (category_type) REFERENCES category_types (id),
-    FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
+    FOREIGN KEY (listing_id) REFERENCES listings (id)
 );
+
