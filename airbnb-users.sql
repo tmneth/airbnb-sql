@@ -16,6 +16,7 @@ GRANT USAGE ON airbnb.* TO 'accounting'@'%';
 CREATE USER 'marketing'@'%' IDENTIFIED BY 'evenmoremuchsecure';
 GRANT SELECT ON airbnb.active_users TO 'marketing'@'%';
 GRANT SELECT ON airbnb.user_transactions_summary TO 'marketing'@'%';
+GRANT SELECT ON airbnb.city_listings TO 'marketing'@'%';
 GRANT USAGE ON airbnb.* TO 'marketing'@'%';
 
 # Create airbnb admin users
