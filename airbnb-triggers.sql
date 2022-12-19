@@ -1,3 +1,5 @@
+USE airbnb;
+
 # Validate the email column in the users table to ensure that it is a unique value:
 CREATE TRIGGER unique_email
     BEFORE INSERT
@@ -32,7 +34,7 @@ BEGIN
 END;
 
 # Update the city column to have the first letter capitalized when a new row is inserted into the countries table:
-CREATE TRIGGER update_country_case
+CREATE TRIGGER update_cities_case
     AFTER INSERT
     ON cities
     FOR EACH ROW

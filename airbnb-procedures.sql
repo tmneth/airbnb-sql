@@ -1,3 +1,5 @@
+USE airbnb;
+
 DELIMITER $$
 
 # Deactivate user account:

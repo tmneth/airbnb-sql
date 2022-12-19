@@ -1,5 +1,3 @@
-# TODO: change '%' to 'localhost' when you copy this code
-
 USE airbnb;
 
 # Create a user that can only use select
